@@ -43,10 +43,7 @@ module.exports = {
 		let colorBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(colors), gl.STATIC_DRAW);
-		// let vao = gl.createVertexArray();
-		// gl.bindVertexArray(vao);
 
-		// gl.enableVertexAttributeArray();
 		return {
 			vertices: vertexBuffer,
 			colors: colorBuffer,
@@ -55,12 +52,12 @@ module.exports = {
 	},
 
 	grid(gl, shader) {
-
+		const N = 100;
 		let vertices = [];
-		for(let i = -10; i <= 10; i++) {
+		for(let i = -N; i <= N; i++) {
 			//line from (i, -10) to (i, 10);
-			vertices.push(i, -10, 0, i, 10, 0);
-			vertices.push(-10, i, 0, 10, i, 0);
+			vertices.push(i, -N, 0, i, N, 0);
+			vertices.push(-N, i, 0, N, i, 0);
 		}
 
 		let vertexBuffer = gl.createBuffer();

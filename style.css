@@ -1,0 +1,8 @@
+body {
+	background-color: #c67; /*faded raspberry*/
+}
+
+canvas {
+	margin: 0 auto;
+	display: block;
+}

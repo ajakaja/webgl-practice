@@ -1,0 +1,17 @@
+{
+  "name": "gldemo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "browserify src/index.js -o dist/bundle.js",
+    "watch": "watchify src/index.js -o dist/bundle.js --debug --verbose"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "domready": "^1.0.8",
+    "gl-matrix": "^2.7.1",
+    "npm": "^6.4.0"
+  }
+}

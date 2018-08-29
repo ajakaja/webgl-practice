@@ -1,3 +1,5 @@
+const twgl = require("twgl.js");
+
 module.exports = {
 	pyramid(gl) {
 		let vertices = [
@@ -18,10 +20,6 @@ module.exports = {
 			1.0, 0.0, 0.0
 		];
 
-		let vertexBuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-
 		let colors = [
 			150, 100, 50, 255,
 			150, 100, 50, 255,
@@ -40,15 +38,10 @@ module.exports = {
 			150, 100, 150, 255
 		];
 
-		let colorBuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Uint8Array(colors), gl.STATIC_DRAW);
-
-		return {
-			vertices: vertexBuffer,
-			colors: colorBuffer,
-			count: vertices.length / 3
-		}
+		return twgl.createBufferInfoFromArrays(gl, {
+			a_position: { numComponents: 3, data: vertices },
+			a_color: { numComponents: 4, data: colors, type: Uint8Array }
+		});
 	},
 
 	grid(gl) {
@@ -64,13 +57,8 @@ module.exports = {
 			-N, N, 0
 		];
 
-		let vertexBuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-
-		return {
-			vertices: vertexBuffer,
-			count: vertices.length / 3
-		};
+		return twgl.createBufferInfoFromArrays(gl, {
+			a_position: {numComponents: 3, data: vertices}
+		});
 	}
 }

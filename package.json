@@ -4,14 +4,17 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "build": "browserify src/index.js -o dist/bundle.js",
-    "watch": "watchify src/index.js -o dist/bundle.js --debug --verbose"
+    "build": "browserify -t strictify -t brfs src/index.js -o dist/bundle.js",
+    "watch": "watchify -t strictify -t brfs src/index.js -o dist/bundle.js --debug --verbose"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "brfs": "^2.0.1",
     "domready": "^1.0.8",
     "gl-matrix": "^2.7.1",
-    "npm": "^6.4.0"
+    "npm": "^6.4.1",
+    "strictify": "^0.2.0",
+    "twgl.js": "^4.4.0"
   }
 }

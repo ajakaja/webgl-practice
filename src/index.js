@@ -17,7 +17,6 @@ function start() {
 		delta = now-last;
 		last = now;
 		
-
 		input.tick(delta, graphics.moveCamera);
 		graphics.tick(delta);
 		requestAnimationFrame(tick);

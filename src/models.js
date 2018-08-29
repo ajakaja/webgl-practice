@@ -1,5 +1,5 @@
 module.exports = {
-	pyramid(gl, shader) {
+	pyramid(gl) {
 		let vertices = [
 			0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0,
@@ -51,14 +51,18 @@ module.exports = {
 		}
 	},
 
-	grid(gl, shader) {
-		const N = 100;
-		let vertices = [];
-		for(let i = -N; i <= N; i++) {
-			//line from (i, -10) to (i, 10);
-			vertices.push(i, -N, 0, i, N, 0);
-			vertices.push(-N, i, 0, N, i, 0);
-		}
+	grid(gl) {
+		const N = 50;
+	
+		let vertices = [
+			-N, -N, 0, 
+			N, -N, 0, 
+			N, N, 0,
+
+			-N, -N, 0,
+			N, N, 0,
+			-N, N, 0
+		];
 
 		let vertexBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);

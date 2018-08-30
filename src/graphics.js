@@ -1,25 +1,16 @@
 const glm = require("gl-matrix");
 const twgl = require("twgl.js");
 
-const initShaders = require("./shaders.js");
 const models = require("./models.js");
 const mat4 = glm.mat4;
 const glMatrix = glm.glMatrix;
 
-let gl, polyProgram, gridProgram, pyramidInfo, gridInfo;
+let gl;
 
 var cameraMatrix = mat4.create();
 
 function init() {
 	gl = setupGl();
-	let shaders = initShaders(gl);
-	polyProgram = shaders.polyProgram;
-	gridProgram = shaders.gridProgram;
-
-	gl.useProgram(polyProgram.program);
-
-	pyramidInfo = models.pyramid(gl, polyProgram);
-	gridInfo = models.grid(gl, gridProgram);
 
 	const translationMatrix = mat4.create();
 	const perspectiveMatrix = mat4.create();
@@ -38,8 +29,7 @@ function init() {
 		}
 
 		mat4.fromTranslation(cameraMatrix, pos);
-		mat4.rotateX(cameraMatrix, cameraMatrix, rad)
-
+		mat4.rotateX(cameraMatrix, cameraMatrix, rad) //todo: don't invert?
 		mat4.invert(viewMatrix, cameraMatrix);
 		mat4.multiply(viewMatrix, translationMatrix, viewMatrix);
 		mat4.multiply(viewMatrix, perspectiveMatrix, viewMatrix);
@@ -63,40 +53,45 @@ function init() {
 		updateCamera(cameraPos);
 	}
 
-	const ANG_VELOCITY = 1.0; //radians
-	let d;
-
-	function tick(delta) {
+	let programInfo;
+	function render(sceneRoot) {
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-		gl.enable(gl.DEPTH_TEST);
 
-		uniforms.modelMatrix = ID4; //we don't want the grid to rotate //TODO rename matrices
+		sceneRoot.computeWorldMatrix(ID4); //recurses
 
-		gl.useProgram(gridProgram.program);
+		getRenderables(sceneRoot).forEach(node => {
+			programInfo = node.shaderProgram;
+			gl.useProgram(programInfo.program);
 
-    	twgl.setUniforms(gridProgram, uniforms);
-		twgl.setBuffersAndAttributes(gl, gridProgram, gridInfo); 
-		twgl.drawBufferInfo(gl, gridInfo);
+			uniforms.modelMatrix = node.worldMatrix;
+			twgl.setUniforms(programInfo, uniforms);
+			twgl.setBuffersAndAttributes(gl, programInfo, node.bufferInfo); 
+			twgl.drawBufferInfo(gl, node.bufferInfo);
 
-		gl.disable(gl.DEPTH_TEST); //???
-		uniforms.modelMatrix = modelMatrix;
-
-
-		d = ANG_VELOCITY * delta;
-		mat4.rotateX(modelMatrix, modelMatrix, d);
-		mat4.rotateY(modelMatrix, modelMatrix, -d);
-
-		gl.useProgram(polyProgram.program);
-
-    	twgl.setUniforms(polyProgram, uniforms);
-		twgl.setBuffersAndAttributes(gl, polyProgram, pyramidInfo); 
-		twgl.drawBufferInfo(gl, pyramidInfo);
+			gl.clear(gl.DEPTH_BUFFER_BIT); //todo: do only after grid
+		});
 	}
 
-	module.exports.tick = tick;
+	module.exports.render = render;
 	module.exports.moveCamera = moveCamera;
+	module.exports.gl = gl;
+}
 
+let renderables;
+
+function getRenderables(scene) {
+	renderables = [];
+	getRenderablesRecursive(scene, renderables);
+	//todo: sort by shader program?
+	return renderables;
+}
+
+function getRenderablesRecursive(node, ret) {
+	if(node.bufferInfo) {
+		ret.push(node);
+	}
+	node.children.forEach((e) => getRenderablesRecursive(e, ret));
 }
 
 function setupGl() {
@@ -109,6 +104,9 @@ function setupGl() {
 	}
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.enable(gl.CULL_FACE);
+	gl.enable(gl.BLEND);
+	gl.enable(gl.DEPTH_TEST);
+	gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	return gl;
 }
 
@@ -118,6 +116,6 @@ function initError() {
 
 module.exports = {
 	init: init,
-	tick: initError,
+	render: initError,
 	moveCamera: initError
 };

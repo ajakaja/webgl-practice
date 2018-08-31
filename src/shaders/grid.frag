@@ -23,6 +23,5 @@ void main(void) {
 	//being occluded requires depth buffer, but then the spaces between grid lines occlude other things!
 	//we'd like to be occluded but not occlude
 	outputColor = vec4(vec3(1.0 - min(line, 1.0)), max(ceil(1.0-line)-0.5, 0.0));
-	//outputColor = vec4(vec3(1.0 - min(line, 1.0)), 1.0);
-	//outputColor = vec4(vec3(1.0), max(1.0-line, 0.0));
+
 }

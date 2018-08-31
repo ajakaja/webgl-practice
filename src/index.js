@@ -17,15 +17,15 @@ function start() {
 
 
 	var last = 0;
-	let delta;
+	let delta_seconds;
 	function tick(now) {
 		frameCount++;
-		delta = (now-last)*0.001;
-		delta = Math.min(delta, 100); //so we don't skip frames when offscreen.
+		delta_seconds = (now-last)*0.001;
+		delta_seconds = Math.min(delta_seconds, 0.01); //so we don't skip frames when offscreen.
 		last = now;
 		
-		input.tick(delta, graphics.moveCamera);
-		scene.tick(delta);
+		input.tick(delta_seconds, graphics.moveCamera);
+		scene.tick(delta_seconds);
 		graphics.render(scene);
 		requestAnimationFrame(tick);
 	}

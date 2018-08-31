@@ -15,6 +15,9 @@ module.exports = function(gl) {
 	let polyProgram = twgl.createProgramInfo(gl, [polyVertSrc, polyFragSrc]);
 	let gridProgram = twgl.createProgramInfo(gl, [gridVertSrc, gridFragSrc]);
 
+	polyProgram.ORDER = 2;
+	gridProgram.ORDER = 3;
+
 	return {
 		polyProgram: polyProgram,
 		gridProgram: gridProgram

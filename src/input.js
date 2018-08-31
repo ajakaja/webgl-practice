@@ -4,7 +4,7 @@ const UP = 'ArrowUp';
 const RIGHT= 'ArrowRight';
 const DOWN = 'ArrowDown';
 
-const VELOCITY = 2.0;
+const VELOCITY = 4.0;
 const direction = [0.0,0.0,0.0];
 
 function init() {
@@ -37,7 +37,11 @@ function init() {
 	function tick(delta, moveFn) {
 
 		let d = VELOCITY*delta;
-		moveFn([direction[0]*d, direction[1]*d, direction[2]*d]);
+		if(direction[0] == 0.0 && direction[1] == 0.0 && direction[2] == 0.0) {
+
+		} else {
+			moveFn([direction[0]*d, direction[1]*d, direction[2]*d]);
+		}
 	}
 
 	module.exports.tick = tick;

@@ -53,6 +53,8 @@ class Renderable extends Node {
 		if(!bufferInfo || !shaderProgram) { throw `error initializing Renderable(${this.name})`; }
 		this.bufferInfo = bufferInfo;
 		this.shaderProgram = shaderProgram;
+		this.beforeRender = NOP;
+		this.afterRender = NOP;
 	}
 }
 

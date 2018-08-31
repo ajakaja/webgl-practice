@@ -1,7 +1,6 @@
 const glm = require("gl-matrix");
 const twgl = require("twgl.js");
 
-const models = require("./models.js");
 const mat4 = glm.mat4;
 const glMatrix = glm.glMatrix;
 
@@ -53,15 +52,18 @@ function init() {
 		updateCamera(cameraPos);
 	}
 
-	let programInfo;
-	function render(sceneRoot) {
+	let programInfo, renderables;
+
+
+
+	function render(scene) {
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
-		sceneRoot.computeWorldMatrix(ID4); //recurses
-
-		getRenderables(sceneRoot).forEach(node => {
+		renderables = scene.getRenderables();
+		renderables.forEach(node => {
 			programInfo = node.shaderProgram;
+			node.beforeRender(gl);
 			gl.useProgram(programInfo.program);
 
 			uniforms.modelMatrix = node.worldMatrix;
@@ -69,7 +71,8 @@ function init() {
 			twgl.setBuffersAndAttributes(gl, programInfo, node.bufferInfo); 
 			twgl.drawBufferInfo(gl, node.bufferInfo);
 
-			gl.clear(gl.DEPTH_BUFFER_BIT); //todo: do only after grid
+			node.afterRender(gl);
+
 		});
 	}
 
@@ -78,21 +81,7 @@ function init() {
 	module.exports.gl = gl;
 }
 
-let renderables;
 
-function getRenderables(scene) {
-	renderables = [];
-	getRenderablesRecursive(scene, renderables);
-	//todo: sort by shader program?
-	return renderables;
-}
-
-function getRenderablesRecursive(node, ret) {
-	if(node.bufferInfo) {
-		ret.push(node);
-	}
-	node.children.forEach((e) => getRenderablesRecursive(e, ret));
-}
 
 function setupGl() {
 	var canvas = document.getElementById("canvas", { premultipliedAlpha: false });
